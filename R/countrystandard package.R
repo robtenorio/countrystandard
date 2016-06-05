@@ -7,7 +7,7 @@
 #' @return a character vector of supplied country names, a vector of corrected country names, and and optional vector of country codes
 #' @export
 #'
-#' @examples countrystandard(c("congo", "congo dr", "Democratic People's Republic of Congo"), code="IMFcode", name="IMFname", spellcheck=FALSE)
+#' @examples countrystandard(c("congo", "congo dr", "Democratic People's Republic of Congo"), code="IMFcode", name="IMFname")
 
 countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=FALSE) {
   ########### Create a Function for Later
@@ -48,7 +48,9 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
                               stringsAsFactors=FALSE)
 
   no_match_index <- which(!country %in% standard_df_1$supplied.name)
-  country_no_match <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country[no_match_index], 
+  country_no_match <- country[no_match_index]
+  
+  country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
                                  "matched"="no match", stringsAsFactors=FALSE)
   if(spellcheck==FALSE){
     final_df <- rbind(standard_df_1, country_no_match)
@@ -57,13 +59,13 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   
   ########## Spell Check Unmatched Names
   if(spellcheck==TRUE) {
-    test_names <- strsplit(country_no_match, " ")
+    no_match_names <- strsplit(country_no_match, " ")
     
     names_to_split <- gsub(",", "", master_names$master_name)
     correct_names_split <- lapply(names_to_split, function(x) strsplit(x, " "))
     correct_substrings <- unique(tolower(unlist(correct_names_split)))
     
-    edit_distance <- lapply(test_names, function(x) adist(x, correct_substrings, costs = list("insertions"=1,
+    edit_distance <- lapply(no_match_names, function(x) adist(x, correct_substrings, costs = list("insertions"=1,
                                                                                               "deletions"=2,
                                                                                               "substitutions"=2)))
     
