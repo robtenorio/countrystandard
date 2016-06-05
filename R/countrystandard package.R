@@ -56,13 +56,13 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   }
   
   if(spellcheck==FALSE){
-    if(length(country_no_match)==0){
+    if(length(country_no_match)==0) {
       final_df <- standard_df_1
     }
-    if(length(country_no_match) > 0{
+    if(length(country_no_match) > 0) {
       country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
                                         "matched"="no match", stringsAsFactors=FALSE)
-      if(length(standard_df_1) > 0){
+      if(length(standard_df_1) > 0) {
         final_df <- rbind(standard_df_1, country_no_match_df)
       }
       if(length(standard_df_1) == 0) {
