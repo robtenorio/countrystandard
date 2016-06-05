@@ -33,17 +33,17 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   
   results <- data.frame(sapply(regex, function(x) grepl(x, input, perl=TRUE), USE.NAMES=TRUE))
   
-  index <- data.frame(which(results==TRUE,arr.ind=T))
+  index_1 <- data.frame(which(results==TRUE,arr.ind=T))
   
   if(length(country) == 1){
-    x <- index$col
-    y <- index$row
+    x <- index_1$col
+    y <- index_1$row
   } else{
-    x <- index$row
-    y <- index$col
+    x <- index_1$row
+    y <- index_1$col
   }
   
-  if(nrow(index) > 0) {
+  if(nrow(index_1) > 0) {
     standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard.name" = master_names[[name]][y], 
                                 "supplied.name" = country[x], "matched" = "matched",
                                 stringsAsFactors=FALSE)
@@ -51,7 +51,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     no_match_index <- which(!country %in% standard_df_1$supplied.name)
     country_no_match <- country[no_match_index]
   } 
-  if(nrow(index) == 0){
+  if(nrow(index_1) == 0){
     country_no_match <- country
   }
   
@@ -62,10 +62,10 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     if(length(country_no_match) > 0) {
       country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
                                         "matched"="no match", stringsAsFactors=FALSE)
-      if(nrow(index) > 0) {
+      if(nrow(index_1) > 0) {
         final_df <- rbind(standard_df_1, country_no_match_df)
       }
-      if(nrow(index) == 0) {
+      if(nrow(index_1) == 0) {
         final_df <- country_no_match_df
       }
       
@@ -93,23 +93,27 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     
     results <- data.frame(sapply(regex, function(x) grepl(x, input, perl=TRUE), USE.NAMES=TRUE))
     
-    index <- data.frame(which(results==TRUE,arr.ind=T))
+    index_2 <- data.frame(which(results==TRUE,arr.ind=T))
     
     if(length(country_no_match) == 1){
-      x <- index$col
-      y <- index$row
+      x <- index_2$col
+      y <- index_2$row
     } else{
-      x <- index$row
-      y <- index$col
+      x <- index_2$row
+      y <- index_2$col
     }
     
     standard_df_2 <- data.frame("code" = master_names[[code]][y], "standard name" = master_names[[name]][y], 
                                 "supplied name" = country_no_match[x], "matched"="spell checked", 
                                 stringsAsFactors=FALSE)
     
-    ### Now combine the two data frames
-    final_df <- rbind(standard_df_1, standard_df_2)
-    
+    if(nrow(index_1) > 0){
+      ### Now combine the two data frames
+      final_df <- rbind(standard_df_1, standard_df_2)
+    }
+    if(nrow(index_2) == 0){
+      final_df <- standard_df_2
+    }
     
   }
   
