@@ -51,7 +51,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   country_no_match <- country[no_match_index]
   
   if(spellcheck==FALSE){
-    if(nrow(country_no_match)==0){
+    if(length(country_no_match)==0){
       final_df <- standard_df_1
     } else {
       country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
@@ -62,7 +62,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   }
 
   ########## Spell Check Unmatched Names
-  if(spellcheck==TRUE & nrow(country_no_match) !=0) {
+  if(spellcheck==TRUE & length(country_no_match) !=0) {
     no_match_names <- strsplit(country_no_match, " ")
     
     names_to_split <- gsub(",", "", master_names$master_name)
