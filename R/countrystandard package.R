@@ -53,7 +53,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname") {
   ########## Spell Check Unmatched Names
   test_names <- strsplit(country_no_match, " ")
   
-  names_to_split <- gsub(",", "", correct_names$master_name)
+  names_to_split <- gsub(",", "", master_names$master_name)
   correct_names_split <- lapply(names_to_split, function(x) strsplit(x, " "))
   correct_substrings <- unique(tolower(unlist(correct_names_split)))
   
