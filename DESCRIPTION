@@ -1,0 +1,13 @@
+Package: countrystandard
+Type: Package
+Title: Country Name Spell Checker and Country Code Matcher
+Version: 0.1
+Date: 2016-06-04
+Author: Rob Tenorio
+Maintainer: Rob Tenorio <rtenori2@jhu.edu>
+Description: This package spellchecks and standardizes country names, assigning
+    a unique country code of the user's choosing to each country name.
+License: Creative Commons License
+LazyData: FALSE
+Imports: stringr
+RoxygenNote: 5.0.1.9000
