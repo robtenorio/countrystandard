@@ -43,23 +43,29 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     y <- index$col
   }
   
-  standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard.name" = master_names[[name]][y], 
-                              "supplied.name" = country[x], "matched" = "matched",
-                              stringsAsFactors=FALSE)
-  
-  no_match_index <- which(!country %in% standard_df_1$supplied.name)
-  country_no_match <- country[no_match_index]
+  if(length(index) > 0){
+    standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard.name" = master_names[[name]][y], 
+                                "supplied.name" = country[x], "matched" = "matched",
+                                stringsAsFactors=FALSE)
+    
+    no_match_index <- which(!country %in% standard_df_1$supplied.name)
+    country_no_match <- country[no_match_index]
+  } 
+  if(length(index) == 0){
+    country_no_match <- country
+  }
   
   if(spellcheck==FALSE){
     if(length(country_no_match)==0){
       final_df <- standard_df_1
-    } else {
+    }
+    if(length(country_no_match) > 0{
       country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
                                         "matched"="no match", stringsAsFactors=FALSE)
       if(length(standard_df_1) > 0){
         final_df <- rbind(standard_df_1, country_no_match_df)
       }
-      else {
+      if(length(standard_df_1) == 0) {
         final_df <- country_no_match_df
       }
       
@@ -68,7 +74,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   }
   
   ########## Spell Check Unmatched Names
-  if(spellcheck==TRUE & length(country_no_match) !=0) {
+  if(spellcheck==TRUE & length(country_no_match) > 0) {
     no_match_names <- strsplit(country_no_match, " ")
     
     names_to_split <- gsub(",", "", master_names$master_name)
