@@ -50,20 +50,19 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   no_match_index <- which(!country %in% standard_df_1$supplied.name)
   country_no_match <- country[no_match_index]
   
-  country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
-                                 "matched"="no match", stringsAsFactors=FALSE)
-  
   if(spellcheck==FALSE){
     if(nrow(country_no_match)==0){
       final_df <- standard_df_1
     } else {
+      country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
+                                 "matched"="no match", stringsAsFactors=FALSE)
       final_df <- rbind(standard_df_1, country_no_match_df)
     }
     
   }
 
   ########## Spell Check Unmatched Names
-  if(spellcheck==TRUE) {
+  if(spellcheck==TRUE & nrow(country_no_match) !=0) {
     no_match_names <- strsplit(country_no_match, " ")
     
     names_to_split <- gsub(",", "", master_names$master_name)
@@ -97,11 +96,8 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
                                 stringsAsFactors=FALSE)
     
     ### Now combine the two data frames
-    if(nrow(nomatch)==0){
-      final_df <- standard_df_1
-    } else {
-      final_df <- rbind(standard_df_1, standard_df_2)
-    }
+    final_df <- rbind(standard_df_1, standard_df_2)
+  
     
   }
 
