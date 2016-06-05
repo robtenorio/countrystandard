@@ -111,7 +111,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
       ### Now combine the two data frames
       final_df <- rbind(standard_df_1, standard_df_2)
     }
-    if(nrow(index_2) == 0){
+    if(nrow(index_1) == 0){
       final_df <- standard_df_2
     }
     
