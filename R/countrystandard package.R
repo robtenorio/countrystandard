@@ -50,7 +50,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   no_match_index <- which(!country %in% standard_df_1$supplied.name)
   country_no_match <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country[no_match_index], 
                                  "matched"="no match", stringsAsFactors=FALSE)
-  if(spellcheck=FALSE){
+  if(spellcheck==FALSE){
     final_df <- rbind(standard_df_1, country_no_match)
   }
   
