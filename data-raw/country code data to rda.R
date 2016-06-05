@@ -1,6 +1,3 @@
 library(devtools)
-correct_names <- read.csv("/Users/rtenorio/countrystandard/data-raw/Master Country Names and Codes.csv", header=TRUE, stringsAsFactors=FALSE)
-setwd("/Users/rtenorio")
-use_data(correct_names, pkg = "countrystandard", internal = TRUE, overwrite=TRUE)
-setwd("/Users/rtenorio/countrystandard/R")
-load("sysdata.rda")
+master_names <- read.csv("master_names_regex.csv", header=TRUE, stringsAsFactors=FALSE)
+use_data(master_names, pkg = "countrystandard", internal = TRUE, overwrite=TRUE)
