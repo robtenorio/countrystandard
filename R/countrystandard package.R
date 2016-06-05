@@ -44,7 +44,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   }
   
   standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard.name" = master_names[[name]][y], 
-                              "supplied.name" = country[x], stringsAsFactors=FALSE, "matched" = "matched",
+                              "supplied.name" = country[x], "matched" = "matched",
                               stringsAsFactors=FALSE)
 
   no_match_index <- which(!country %in% standard_df_1$supplied.name)
