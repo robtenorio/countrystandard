@@ -101,6 +101,9 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     
   }
 
+if(spellcheck==TRUE & length(country_no_match)==0){
+  final_df <- standard_df_1
+}
   
   return(final_df[order(final_df$supplied.name),])
   
