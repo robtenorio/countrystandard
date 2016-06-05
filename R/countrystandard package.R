@@ -53,7 +53,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
                                  "matched"="no match", stringsAsFactors=FALSE)
   if(spellcheck==FALSE){
-    final_df <- rbind(standard_df_1, country_no_match)
+    final_df <- rbind(standard_df_1, country_no_match_df)
   }
   
   
