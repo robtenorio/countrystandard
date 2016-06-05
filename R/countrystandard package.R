@@ -7,9 +7,9 @@
 #' @return a character vector of supplied country names, a vector of corrected country names, and and optional vector of country codes
 #' @export
 #'
-#' @examples countrystandard(c("congo", "congo dr", "Democratic People's Republic of Congo"), code="IMFcode", name="IMFname")
+#' @examples countrystandard(c("congo", "congo dr", "Democratic People's Republic of Congo"), code="IMFcode", name="IMFname", spellcheck=FALSE)
 
-countrystandard <- function(x = NULL, code="ISOA3", name="ISOname") {
+countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=FALSE) {
   ########### Create a Function for Later
   # function to find the edit minimum edit distance
   distance_function <- function(x=NULL){
@@ -43,46 +43,56 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname") {
     y <- index$col
   }
   
-  standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard name" = master_names[[name]][y], "supplied name" = country[x], stringsAsFactors=FALSE)
-  
-  standard_df_1
-  
+  standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard.name" = master_names[[name]][y], 
+                              "supplied.name" = country[x], stringsAsFactors=FALSE, "matched" = "matched",
+                              stringsAsFactors=FALSE)
+
   no_match_index <- which(!country %in% standard_df_1$supplied.name)
-  country_no_match <- country[no_match_index]
-  
-  ########## Spell Check Unmatched Names
-  test_names <- strsplit(country_no_match, " ")
-  
-  names_to_split <- gsub(",", "", master_names$master_name)
-  correct_names_split <- lapply(names_to_split, function(x) strsplit(x, " "))
-  correct_substrings <- unique(tolower(unlist(correct_names_split)))
-  
-  edit_distance <- lapply(test_names, function(x) adist(x, correct_substrings, costs = list("insertions"=1,
-                                                                                            "deletions"=2,
-                                                                                            "substitutions"=2)))
-  
-  output <- lapply(edit_distance, function(x) distance_function(x))
-  output2 <- lapply(output, function(x) paste(x, sep="", collapse=" "))
-  
-  ######## Run it through the REGEX again
-  input <- tolower(output2)
-  
-  results <- data.frame(sapply(regex, function(x) grepl(x, input, perl=TRUE), USE.NAMES=TRUE))
-  
-  index <- data.frame(which(results==TRUE,arr.ind=T))
-  
-  if(length(country_no_match) == 1){
-    x <- index$col
-    y <- index$row
-  } else{
-    x <- index$row
-    y <- index$col
+  country_no_match <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country[no_match_index], 
+                                 "matched"="no match", stringsAsFactors=FALSE)
+  if(spellcheck=FALSE){
+    final_df <- rbind(standard_df_1, country_no_match)
   }
   
-  standard_df_2 <- data.frame("code" = master_names[[code]][y], "standard name" = master_names[[name]][y], "supplied name" = country_no_match[x], stringsAsFactors=FALSE)
   
-  ### Now combine the two data frames
-  final_df <- rbind(standard_df_1, standard_df_2)
+  ########## Spell Check Unmatched Names
+  if(spellcheck==TRUE) {
+    test_names <- strsplit(country_no_match, " ")
+    
+    names_to_split <- gsub(",", "", master_names$master_name)
+    correct_names_split <- lapply(names_to_split, function(x) strsplit(x, " "))
+    correct_substrings <- unique(tolower(unlist(correct_names_split)))
+    
+    edit_distance <- lapply(test_names, function(x) adist(x, correct_substrings, costs = list("insertions"=1,
+                                                                                              "deletions"=2,
+                                                                                              "substitutions"=2)))
+    
+    output <- lapply(edit_distance, function(x) distance_function(x))
+    output2 <- lapply(output, function(x) paste(x, sep="", collapse=" "))
+    
+    ######## Run it through the REGEX again
+    input <- tolower(output2)
+    
+    results <- data.frame(sapply(regex, function(x) grepl(x, input, perl=TRUE), USE.NAMES=TRUE))
+    
+    index <- data.frame(which(results==TRUE,arr.ind=T))
+    
+    if(length(country_no_match) == 1){
+      x <- index$col
+      y <- index$row
+    } else{
+      x <- index$row
+      y <- index$col
+    }
+    
+    standard_df_2 <- data.frame("code" = master_names[[code]][y], "standard name" = master_names[[name]][y], 
+                                "supplied name" = country_no_match[x], "matched"="spell checked", 
+                                stringsAsFactors=FALSE)
+    
+    ### Now combine the two data frames
+    final_df <- rbind(standard_df_1, standard_df_2)
+  }
+
   
   return(final_df[order(final_df$supplied.name),])
   
