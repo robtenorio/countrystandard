@@ -46,7 +46,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   standard_df_1 <- data.frame("code" = master_names[[code]][y], "standard.name" = master_names[[name]][y], 
                               "supplied.name" = country[x], "matched" = "matched",
                               stringsAsFactors=FALSE)
-
+  
   no_match_index <- which(!country %in% standard_df_1$supplied.name)
   country_no_match <- country[no_match_index]
   
@@ -55,12 +55,18 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
       final_df <- standard_df_1
     } else {
       country_no_match_df <- data.frame("code" = NA, "standard.name" = NA, "supplied.name" = country_no_match, 
-                                 "matched"="no match", stringsAsFactors=FALSE)
-      final_df <- rbind(standard_df_1, country_no_match_df)
+                                        "matched"="no match", stringsAsFactors=FALSE)
+      if(length(standard_df_1) > 0){
+        final_df <- rbind(standard_df_1, country_no_match_df)
+      }
+      else {
+        final_df <- country_no_match_df
+      }
+      
     }
     
   }
-
+  
   ########## Spell Check Unmatched Names
   if(spellcheck==TRUE & length(country_no_match) !=0) {
     no_match_names <- strsplit(country_no_match, " ")
@@ -70,8 +76,8 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     correct_substrings <- unique(tolower(unlist(correct_names_split)))
     
     edit_distance <- lapply(no_match_names, function(x) adist(x, correct_substrings, costs = list("insertions"=1,
-                                                                                              "deletions"=2,
-                                                                                              "substitutions"=2)))
+                                                                                                  "deletions"=2,
+                                                                                                  "substitutions"=2)))
     
     output <- lapply(edit_distance, function(x) distance_function(x))
     output2 <- lapply(output, function(x) paste(x, sep="", collapse=" "))
@@ -97,13 +103,13 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
     
     ### Now combine the two data frames
     final_df <- rbind(standard_df_1, standard_df_2)
-  
+    
     
   }
-
-if(spellcheck==TRUE & length(country_no_match)==0){
-  final_df <- standard_df_1
-}
+  
+  if(spellcheck==TRUE & length(country_no_match)==0){
+    final_df <- standard_df_1
+  }
   
   return(final_df[order(final_df$supplied.name),])
   
