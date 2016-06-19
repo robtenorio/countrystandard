@@ -26,7 +26,9 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   country <- x
   
   input <- tolower(country)
-  
+  temp.env <- new.env()
+  data(names.regex, envir=temp.env)
+  master_names <- get("names.regex", envir = temp.env)
   regex <- master_names$regex
   
   regex <- gsub("\\\\", "\\", regex, fixed=TRUE)
