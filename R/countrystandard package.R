@@ -27,7 +27,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   
   input <- tolower(country)
   temp.env <- new.env()
-  data(names.regex, envir=temp.env)
+  data(names.regex, package="countrystandard", envir=temp.env)
   master_names <- get("names.regex", envir = temp.env)
   regex <- master_names$regex
   
