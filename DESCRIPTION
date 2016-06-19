@@ -8,6 +8,6 @@ Maintainer: Rob Tenorio <rtenori2@jhu.edu>
 Description: This package spellchecks and standardizes country names, assigning
     a unique country code of the user's choosing to each country name.
 License: Creative Commons License
-LazyData: FALSE
+LazyData: TRUE
 Imports: stringr
 RoxygenNote: 5.0.1.9000
