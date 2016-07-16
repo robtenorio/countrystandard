@@ -26,9 +26,9 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   country <- x
   
   input <- tolower(country)
-  temp_env <- new.env()
-  data(names.regex, envir=temp_env)
-  master_names <- get("master_names", envir=temp_env)
+  temp.env <- new.env()
+  data(names.regex, package="countrystandard", envir=temp.env)
+  master_names <- get("master_names", envir = temp.env)
   regex <- master_names$regex
   
   regex <- gsub("\\\\", "\\", regex, fixed=TRUE)
@@ -77,7 +77,7 @@ countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=F
   
   ########## Spell Check Unmatched Names
   if(spellcheck==TRUE & length(country_no_match) > 0) {
-    no_match_names <- strsplit(country_no_match, " ")
+    no_match_names <- strsplit(tolower(country_no_match), " ")
     
     names_to_split <- gsub(",", "", master_names$master_name)
     correct_names_split <- lapply(names_to_split, function(x) strsplit(x, " "))
