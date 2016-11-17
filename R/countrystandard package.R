@@ -9,6 +9,8 @@
 #'
 #' @examples countrystandard(c("congo", "congo dr", "Democratic People's Republic of Congo"), code="IMFcode", name="IMFname")
 
+Sys.setlocale("LC_ALL", "C")
+
 countrystandard <- function(x = NULL, code="ISOA3", name="ISOname", spellcheck=FALSE) {
   ########### Create a Function for Later
   # function to find the edit minimum edit distance
